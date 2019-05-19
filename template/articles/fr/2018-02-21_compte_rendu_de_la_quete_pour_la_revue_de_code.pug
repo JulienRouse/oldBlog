@@ -1,0 +1,17 @@
+extends ../../layoutFR
+
+
+block prepend head
+    base(href="../../..")
+    block head-more
+        - var title = 'Compte rendu de la quête pour la revue de code'
+        - var description = 'Compte rendu et analyse des revue des codes pour le challenge de janvier 2018'
+        meta(name='description' content=description)
+        title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/articles/en/2018-02-21_codereview_quest_summary.html")
+            img(src="img/common/001-united-states.png" alt="English version")
+block content
+    include:markdown-it ../../../articles_markdown/fr/2018-02-21_compte_rendu_de la quete_pour_la_revue_de_code.md

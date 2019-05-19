@@ -1,0 +1,60 @@
+//- layoutFR.pug
+doctype html
+html(lang='fr')
+    block head
+        head
+            meta(charset='utf-8')
+            meta(name='viewport' content='width=device-width, initial-scale=1.0')
+            link(rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css")
+            link(rel="stylesheet" href="css/layouts/blog.css")
+            <!--[if lte IE 8]>
+            link(rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css")
+            <![endif]-->
+            <!--[if gt IE 8]><!-->
+            link(rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css")
+            <!--<![endif]-->
+            <!--[if lte IE 8]>
+            link(rel="stylesheet" href="css/layouts/blog-old-ie.css")
+            <![endif]-->
+            <!--[if gt IE 8]><!-->
+            link(rel="stylesheet" href="css/layouts/blog.css")
+            <!--<![endif]-->
+            link(rel="stylesheet" href="css/layouts/articles.css")
+            block head-more
+
+        block scripts
+            //script(src='/jquery.js')
+    body
+        #layout.pure-g
+            .sidebar.pure-u-1.pure-u-md-1-4
+                .header
+                    h1.brand-title Le blog de Julien
+                    h2.brand-tagline Learning for fun and profits!
+
+                    nav.nav
+                        ul.nav-list
+                            li.nav-item
+                                a.pure-button(href="indexFR.html") Accueil
+                            li.nav-item
+                                a.pure-button(href="template/a_propos.html") A propos
+                            block traduction
+                                li.nav-item.nav-item-traduction
+                                    a.pure-button(href="index.html")
+                                        img(src="img/common/001-united-states.png" alt="English version")
+            .content.pure-u-1.pure-u-md-3-4
+                block content
+        block foot
+            .footer
+                .pure-menu.pure-menu-horizontal
+                    ul
+                        li.pure-menu-item
+                            a.pure-menu-link(href="https://github.com/JulienRouse" target="_blank" rel="external") Github
+                        li.pure-menu-item
+                            a.pure-menu-link(href="https://www.linkedin.com/in/julien-rous%C3%A9-073708102/" target="_blank" rel="external") Linkedin
+                        li.pure-menu-item
+                            a.pure-menu-link(href="https://www.hackerrank.com/JulienRouse" target="_blank" rel="external") HackerRank
+                        li.pure-menu-item
+                            a(href="https://stackexchange.com/users/1191576/julien-rous%c3%a9" target="_blank" rel="external")
+                                img(src="https://stackexchange.com/users/flair/1191576.png" width="208" height="58" alt="profile for Julien Rous&#233; on Stack Exchange, a network of free, community-driven Q&amp;A sites" title="profile for Julien Rous&#233; on Stack Exchange, a network of free, community-driven Q&amp;A sites")
+        block statcounter
+            include clicky.html

@@ -1,0 +1,17 @@
+extends ../../layoutFR
+
+
+block prepend head
+    base(href="../../..")
+    block head-more
+        - var title = 'PHP astucss et bizarreries'
+        - var description = 'Découvrir des astuces et des bizarreries de PHP'
+        meta(name='description' content=description)
+        title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/articles/en/2018-01-28_PHP_tips_and_quirks.html")
+            img(src="img/common/001-united-states.png" alt="English version")
+block content
+    include:markdown-it ../../../articles_markdown/fr/2018-01-28_PHP_tips_and_trick.md

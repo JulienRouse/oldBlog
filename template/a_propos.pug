@@ -1,0 +1,17 @@
+extends layoutFR.pug
+
+block prepend head
+    base(href="..")
+    block head-more
+        - var title = 'A propos'
+        - var description = 'Description de ce blog'
+        meta(name='description' content=description)
+        title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/about.html")
+          img(src="img/common/001-united-states.png" alt="English version")
+
+block content
+    include:markdown-it ../articles_markdown/fr/a_propos.md

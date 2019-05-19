@@ -1,0 +1,100 @@
+extends template/layoutFR.pug
+
+block head-more
+    - var title = "Blog de Julien"
+    - var description = 'Here we learn for fun and profits'
+    meta(name='description' content=description)
+    title #{title}
+
+block content
+    div
+        .posts
+            h1.content-subhead Post épinglé
+            section.post
+                header.post-header
+                    //img.post-avatar(width="48" height="48" alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+
+                    h2.post-title
+                        a(href="template/articles/fr/2018-01-06_StackExchange_codereview_quest.html" hreflang="fr") La quête de la revue de code sur StackExchange
+
+                    p.post-meta Par
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span pour
+                        a.post-category.post-category-challenge(href='#') Challenge
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span le
+                        span.post-date  06-01-2018
+
+                .post-description
+                    p Début d'un challenge de 30 jours avec pour but de faire des revues de code
+        .posts
+            h1.content-subhead Posts récents
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/fr/2018-02-21_compte_rendu_de_la_quete_pour_la_revue_de_code.html" hreflang="fr") Compte rendu de la quête pour la revue de code.
+                    p.post-meta Par
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span pour
+                        a.post-category.post-category-challenge(href='#') Challenge
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span le
+                        span.post-date  21-02-2018
+
+                .post-description
+                    p Compte rendu et analyse des revue des codes pour le challenge de janvier 2018
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/fr/2018-01-28_PHP_tips_and_quirks.html" hreflang="fr") PHP astuces et bizarreries.
+                    p.post-meta Par
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span pour
+                        a.post-category.post-category-challenge(href='#') PHP
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span le
+                        span.post-date  28-01-2018
+
+                .post-description
+                    p Découvrir des astuces et des bizarreries de PHP
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/fr/2018-01-06_StackExchange_codereview_quest.html" hreflang="fr") La quête de la revue de code sur StackExchange
+                    p.post-meta Par
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span pour
+                        a.post-category.post-category-challenge(href='#') Challenge
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span le
+                        span.post-date  06-01-2018
+
+                .post-description
+                    p Début d'un challenge de 30 jours avec pour but de faire des revues de code

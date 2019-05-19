@@ -1,0 +1,17 @@
+extends ../../layoutFR
+
+
+block prepend head
+    base(href="../../..")
+    block head-more
+        - var title = 'The mighty StackExchange code review quest'
+        - var description = 'Start of a 30 days challenge doing code reviews on StackExchange'
+        meta(name='description' content=description)
+        title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/articles/en/2018-01-06_StackExchange_codereview_quest.html")
+            img(src="img/common/001-united-states.png" alt="English version")
+block content
+    include:markdown-it ../../../articles_markdown/fr/2018-01-06_StackExchange_codereview_quest.md

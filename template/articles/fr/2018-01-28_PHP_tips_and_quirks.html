@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="fr"><base href="../../.."><meta name="description" content="Découvrir des astuces et des bizarreries de PHP"><title>PHP astucss et bizarreries</title><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"><link rel="stylesheet" href="css/layouts/blog.css"><!--[if lte IE 8]><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css"><![endif]-->
+<!--[if gt IE 8]><!--><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css"><!--<![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="css/layouts/blog-old-ie.css"><![endif]-->
+<!--[if gt IE 8]><!--><link rel="stylesheet" href="css/layouts/blog.css"><!--<![endif]--><link rel="stylesheet" href="css/layouts/articles.css"><meta name="description" content="Découvrir des astuces et des bizarreries de PHP"><title>PHP astucss et bizarreries</title></head><!--script(src='/jquery.js')--><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><h1 class="brand-title">Le blog de Julien</h1><h2 class="brand-tagline">Learning for fun and profits!</h2><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="indexFR.html">Accueil</a></li><li class="nav-item"><a class="pure-button" href="template/a_propos.html">A propos</a></li><li class="nav-item nav-item-traduction"><a class="pure-button" href="template/articles/en/2018-01-28_PHP_tips_and_quirks.html"><img src="img/common/001-united-states.png" alt="English version"></a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><h2>PHP astuces et bizarreries</h2>
+<p>Cette semaine j'ai appris deux choses nouvelles en PHP, je vais les partager ici (même si ce n'est pas quelque chose de nouveau pour PHP, seulement nouveau pour moi). Aussi, de même que tout ce que je prévois d'écrire dans ce blog, c'est une manière de m'en rappeler dans le futur et de pouvoir y faire référence plus tard.</p>
+<h2>Astuce: Utilisation de <code>empty</code> en conjonction avec <code>isset</code></h2>
+<p>Je suis tombé sur ce <a href="https://stackoverflow.com/q/4559925/3729797">post StackOverflow</a>, et la question est:</p>
+<blockquote>
+<p>Est-ce redondant d'écrire <code>isset($var) AND !empty($var)</code>?</p>
+</blockquote>
+<p>Contrairement à ma première intuition sur le sujet, la réponse à cette question est: <a href="https://stackoverflow.com/a/4559976/3729797">OUI</a>!</p>
+<p>Comme écrit dans la réponse en lien ci-dessus, la <a href="http://php.net/empty">documentation</a> dit:</p>
+<blockquote>
+<p>Determine si une variable est considérée vide. <strong>Une variable est considérée vide si elle n'existe pas</strong> ou si sa valeur est égale à FALSE. <code>empty()</code> ne génère pas de warning si la variable n'existe pas.</p>
+</blockquote>
+<p>Un peu plus loin, la documentation continue ainsi:</p>
+<blockquote>
+<p><code>empty()</code> est essentiellement un équivalent concis de <code>!isset($var) || $var == false</code>.</p>
+</blockquote>
+<p>J'utilisais assez souvent les deux fonctions de cette manière, et même si ça n'a pas une importance capitale, je pense que c'est plus propre d'utiliser seulement <code>empty</code> dans cette situation. Une autre considération est la performance du code, on peut observer les opcodes générés par les deux versions sur le site <a href="https://3v4l.org">3v4l.org</a>.</p>
+<p><a href="https://3v4l.org/EccAc/vld#output">Ici les opcodes</a> pour</p>
+<pre><code>if(isset($var) AND !empty($var))
+    echo $var;
+</code></pre>
+<p>Et <a href="https://3v4l.org/oCGDk/vld#output">ici les opcodes</a> pour</p>
+<pre><code>if(!empty($var))
+    echo $var;
+</code></pre>
+<p>Le premier bout de code génère 8 opcodes alors que le second seulement 5. La plupart du temps ça n'a aucun impact mais j'imagine qu'il vaut mieux être conscient de la différence tout de même.</p>
+<h2>Bizarrerie</h2>
+<p>La bizarrerie dont je veux parler succinctement, je l'ai trouvée sur Reddit, et elle fait partie des comportements étranges de PHP.
+Essaye de deviner le résultat de ce code:</p>
+<pre><code>&lt;?php
+
+$a = 1;
+$c = $a + $a++;
+var_dump($c);
+
+$a = 1;
+$c = $a + $a + $a++;
+var_dump($c);
+</code></pre>
+<p>Si tu as deviné:</p>
+<pre><code>int(3)
+int(3)
+</code></pre>
+<p>Tu as raison! Mais tu as probablement triché ou tu étais déjà au courant de ce résultat étrange!</p>
+<p>Une très bonne explication(en anglais) sur le pourquoi de ce comportement se trouve <a href="https://gist.github.com/nikic/6699370">ici</a>. En très très bref, ça vient d'une optimisation qui est apparue dans PHP5.1, et qui se comporte étrangement dans ce cas précis.</p>
+<p>C'est un résultat curieux, et ça peut être très compliqué de le débuguer! Va voir le lien pour l'explication, c'est très bien écrit. Et pour découvrir plus de curiosité sur PHP, tu peux voir <a href="https://www.reddit.com/r/lolphp/">ce subreddit</a>, certains posts sont vraiment intéressants.</p>
+<hr>
+<p>C'est tout pour aujourd'hui. Étant relativement novice en PHP (j'ai commencé à utiliser PHP au début de septembre 2017, il y a 4 mois), je découvre souvent des astuces (et aussi des bizarreries) et je partagerais mes découvertes intéressantes au fur et à mesure que je les découvrirais.</p>
+</div></div><div class="footer"><div class="pure-menu pure-menu-horizontal"><ul><li class="pure-menu-item"><a class="pure-menu-link" href="https://github.com/JulienRouse" target="_blank" rel="external">Github</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://www.linkedin.com/in/julien-rous%C3%A9-073708102/" target="_blank" rel="external">Linkedin</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://www.hackerrank.com/JulienRouse" target="_blank" rel="external">HackerRank</a></li><li class="pure-menu-item"><a href="https://stackexchange.com/users/1191576/julien-rous%c3%a9" target="_blank" rel="external"><img src="https://stackexchange.com/users/flair/1191576.png" width="208" height="58" alt="profile for Julien Rous&amp;#233; on Stack Exchange, a network of free, community-driven Q&amp;amp;A sites" title="profile for Julien Rous&amp;#233; on Stack Exchange, a network of free, community-driven Q&amp;amp;A sites"></a></li></ul></div></div><!--<a title="Google Analytics Alternative" href="http://clicky.com/101093377"><img alt="Google Analytics Alternative" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>-->
+<script type="text/javascript">
+    var clicky_site_ids = clicky_site_ids || [];
+    clicky_site_ids.push(101093377);
+    (function() {
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = '//static.getclicky.com/js';
+        ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
+    })();
+</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101093377ns.gif" /></p></noscript></body></html>

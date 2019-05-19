@@ -1,0 +1,19 @@
+extends ../../layout
+
+
+block prepend head
+    base(href="../../..")
+    block head-more
+        - var title = 'A new ClojureScript project: an idle game'
+        - var description = 'I built a prototype for an idle game, working with ClojureScript, re-agent and Klipse'
+        meta(name='description' content=description)
+        title #{title}
+    link(rel="stylesheet" href="cotcot/style.css")
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/about.html")
+            img(src="img/common/002-france.png" alt="Version française")
+block content
+    include:markdown-it ../../../articles_markdown/en/2018-05-27_Start_of_a_new_ClojureScript_Project.md
+    include ../../../cotcot/cotcotidle.html

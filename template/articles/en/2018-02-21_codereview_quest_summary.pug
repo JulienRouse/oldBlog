@@ -1,0 +1,17 @@
+extends ../../layout
+
+
+block prepend head
+    base(href="../../..")
+    block head-more
+        - var title = 'Summary of my codereview quest'
+        - var description = 'Look back on the accomplishment during the codereview quest of January 18'
+        meta(name='description' content=description)
+        title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/articles/fr/2018-02-21_compte_rendu_de_la_quete_pour_la_revue_de_code.html")
+            img(src="img/common/002-france.png" alt="Version française")
+block content
+    include:markdown-it ../../../articles_markdown/en/2018-02-21_codereview_quest_summary.md

@@ -1,0 +1,122 @@
+extends template/layout.pug
+
+block head-more
+    - var title = "Julien's blog"
+    - var description = 'Here we learn for fun and profits'
+    meta(name='description' content=description)
+    title #{title}
+
+block content
+    div
+        .posts
+            h1.content-subhead Pinned Post
+            section.post
+                header.post-header
+                    //img.post-avatar(width="48" height="48" alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+
+                    h2.post-title
+                        a(href="template/articles/en/2018-01-06_StackExchange_codereview_quest.html" hreflang="en") The StackExchange code review quest.
+
+                    p.post-meta By
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span under
+                        a.post-category.post-category-challenge(href='#') Challenge
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span on
+                        span.post-date  06-01-2018
+
+                .post-description
+                    p Start of a 30 days challenge doing code reviews on StackExchange
+        .posts
+            h1.content-subhead Recent Posts
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/en/2018-05-27_Start_of_a_new_ClojureScript_Project.html" hreflang="en") A new ClojureScript project.
+                    p.post-meta By
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span under
+                        a.post-category.post-category-challenge(href='#') ClojureScript
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span on
+                        span.post-date  27-05-2018
+
+                .post-description
+                    p I built a prototype of an idle game using ClojureScript, re-agent and Klispe
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/en/2018-02-21_codereview_quest_summary.html" hreflang="en") Summary of my codereview quest.
+                    p.post-meta By
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span under
+                        a.post-category.post-category-challenge(href='#') Challenge
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span on
+                        span.post-date  21-02-2018
+
+                .post-description
+                    p Let's learn some fun tips and quirks of PHP
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/en/2018-01-28_PHP_tips_and_quirks.html" hreflang="en") PHP tips and quirks.
+                    p.post-meta By
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span under
+                        a.post-category.post-category-challenge(href='#') PHP
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span on
+                        span.post-date  28-01-2018
+
+                .post-description
+                    p Let's learn some fun tips and quirks of PHP
+            section.post
+                header.post-header
+                    //img.post-avatar(width=48 height=48 alt="Julien's avatar" src="img/common/avatar_julien_cropped.JPG")
+                    h2.post-title
+                        a(href="template/articles/en/2018-01-06_StackExchange_codereview_quest.html" hreflang="en") The StackExchange code review quest.
+                    p.post-meta By
+                        |
+                        |
+                        a.post-author Julien
+                        |
+                        |
+                        span under
+                        a.post-category.post-category-challenge(href='#') Challenge
+                        a.post-category.post-category-code(href='#') Code
+                        |
+                        |
+                        span on
+                        span.post-date  06-01-2018
+
+                .post-description
+                     p Start of a 30 days challenge doing code reviews on StackExchange
+

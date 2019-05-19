@@ -1,0 +1,62 @@
+.clear{
+	clear: both;
+}
+
+
+/* APP-CONTAINER  */
+.app-container{
+	min-width: 480px;
+	margin: 5px;
+	cursor: default;
+}
+/* FIN APP-CONTAINER */
+
+/* HEADER */
+.header-container{
+	margin-bottom: 5px;
+	border-bottom: 1px solid black;
+}
+.header-title {
+	display: inline;
+	font-weight: normal;
+	font-size: 14px; 
+}
+.header-span{
+	float: right;
+	margin: 0 10px;
+}
+.header-input{
+	padding: 0;
+	background-color: white;
+	border: none;
+	cursor: pointer;
+}
+.header-input:hover{
+	text-decoration: underline;
+	color: #C07;
+}
+
+.header-input:focus{ /* Without this, draw boxes around element after a click*/
+	outline: 0;
+}
+.header-link{
+	text-decoration: underline;
+}
+/* FIN HEADER */
+
+/* MAIN */
+.container{
+	width: 30%;
+	min-width: 150px;
+	float:left;
+}
+.center{
+	max-width: 1000px;
+	margin: 0 auto;
+}
+.container-box{
+	min-height: 300px;
+	margin: 5px; 
+	outline: 1px solid black;
+}
+/* FIN MAIN */

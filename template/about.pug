@@ -1,0 +1,16 @@
+extends layout.pug
+
+block prepend head
+    base(href="..")
+    block head-more
+            - var title = 'Welcome!'
+            - var description = 'Here we learn for fun'
+            meta(name='description' content=description)
+            title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/a_propos.html")
+            img(src="img/common/002-france.png" alt="Version française")
+block content
+    include:markdown-it ../articles_markdown/en/about.md

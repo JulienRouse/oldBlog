@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<script>
+    window.klipse_settings = {
+         selector: '.language-klipse',// css selector for the html elements you want to klipsify
+         selector_reagent: '.language-reagent', // selector for reagent snippets
+		codemirror_options_in: {
+			indentUnit: 8,
+			lineWrapping: true,
+			lineNumbers: true,
+			autoCloseBrackets: true
+		},
+		codemirror_options_out: {
+			lineWrapping: true,
+			lineNumbers: true
+		}
+	}
+</script>
+
+</head>
+<body>
+
+<pre><code class="language-reagent">
+(ns my.cotcot
+        (:require 
+                [reagent.core :as r]
+                [goog.string :as gstring]
+                [goog.string.format]))
+
+;;;; RENDER
+(when-let [element (js/document.getElementById "app")]
+        (r/render-component [component] element))				
+
+;;;; Operation for localstorage
+;;;;https://gist.github.com/daveliepmann/cf923140702c8b1de301
+(defn set-item!
+        "Set `key' in browser's localStorage to `val`."
+        [key val]
+        (.setItem (.-localStorage js/window) key (pr-str val)))
+
+(defn get-item
+        "Returns value of `key' from browser's localStorage."
+        [key]
+        (let [val (.getItem (.-localStorage js/window) key)]
+                (cljs.reader/read-string (if (string? val)
+                                                 val
+                                                 ""))))
+
+(defn remove-item!
+        "Remove the browser's localStorage value for the given `key`"
+        [key]
+        (.removeItem (.-localStorage js/window) key))
+
+;;;; State
+(defn make-cotcot 
+        "Create the main cotcot component"
+        [initial-cost cost-multiplier initial-earning name description] 
+        {:initial-cost initial-cost :cost-multiplier cost-multiplier :initial-earning initial-earning :quantity 0 :name name :description description})
+
+(defn make-upgrade
+        [name description cost benefit]
+        {:name name :description description :cost cost :benefit benefit :bought false})
+
+(def new-state {:currency 20
+                   :lifetime-earning 0
+                   :lvl1 (make-cotcot 10 1.07 0.5 "little poulette" "cute little poulette") 
+                   :lvl2 (make-cotcot 100 1.1 2 "medium poulette" "cute medium poulette") 
+                   :lvl3 (make-cotcot 1000 1.13 10 "big poulette" "cute big poulette")
+                   :lvl4 (make-cotcot 100000 1.14 100 "XXL poulette" "waouw")
+                   :upgrade-multiplier 1
+                   :upgrades {:upgrade1 (make-upgrade "upgrade1" "description1 blabla" 10 0.01)
+                              :upgrade2 (make-upgrade "upgrade2" "description2 bloblo" 100 0.1)}
+                   :reset-multiplier 1})
+
+(def test (r/atom new-state))
+
+(def all-time-stats (r/atom {}))
+
+;;;; FN
+(defn calc-cost [my-atom lvl-key]
+        (let [initial-cost ((@my-atom lvl-key) :initial-cost)
+              quantity ((@my-atom lvl-key) :quantity)
+              cost-multiplier ((@my-atom lvl-key) :cost-multiplier)]
+                (int (+ (* initial-cost (Math/pow cost-multiplier quantity)) quantity))))
+
+(defn add-upgrade-mult [my-atom multiplier]
+        (swap! my-atom update-in [:upgrade-multiplier] + multiplier))
+
+(defn buy [my-atom my-key quantity]
+        (swap! my-atom merge {my-key (- (@my-atom my-key) quantity)}))
+
+(defn sell [my-atom lvl-key quantity]
+        (swap! my-atom update-in [lvl-key :quantity] + quantity))
+
+(defn buyCotCot [my-atom currency-key lvl-key]
+        (let [cost (calc-cost my-atom lvl-key)]
+                (when (<= cost (@my-atom :currency))
+                        (fn [e]
+                                (buy my-atom currency-key cost)
+                                (sell my-atom lvl-key 1)))))
+(defn buyCotCot2 [my-atom currency-key lvl-key]
+        (let [cost (calc-cost my-atom lvl-key)]
+                (when (<= cost (@my-atom :currency))
+                        (buy my-atom currency-key cost)
+                        (sell my-atom lvl-key 1))))
+
+(defn value-per-tick-for-one [my-atom lvl-key]
+        (let [lvl-stat (@my-atom lvl-key)
+              upgrade-multiplier (@my-atom :upgrade-multiplier)
+              reset-multiplier (@my-atom :reset-multiplier)]
+                (* (lvl-stat :initial-earning) upgrade-multiplier reset-multiplier)))
+
+(defn value-per-tick [my-atom lvl-key]
+        (let [lvl-stat (@my-atom lvl-key)
+              upgrade-multiplier (@my-atom :upgrade-multiplier)
+              reset-multiplier (@my-atom :reset-multiplier)]
+                (* (lvl-stat :quantity) (lvl-stat :initial-earning) upgrade-multiplier reset-multiplier)))
+
+(defn total-earning-per-tick [my-atom my-keys]
+        (reduce + (map value-per-tick (repeat my-atom) my-keys)))
+
+
+(defn update-ressource [my-atom]
+        (let [money (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4])]
+                (swap! my-atom merge {:currency (+ (@my-atom :currency) money) :lifetime-earning (+ (@my-atom :lifetime-earning) money)})))
+
+(defn reset-game []
+        "Hard reset on the game state"
+        (reset! test new-state))
+
+(defn prestige []
+        "Soft reset, with a bonus"
+        nil)
+
+;;;; TIMER
+(defonce timer-update-ressource
+        (js/setInterval #(update-ressource test) 1000)) ;; Increment app-state every 1000ms
+
+;;;; COMPONENTS
+(defn header-message-component [message]
+        [:span.header-span message] )
+
+(defn header-button-component [value fn]
+        [header-message-component 
+         [:input.header-input 
+          {:type "button" 
+           :value value 
+           :on-click fn}]])
+
+(defn header-component []
+        [:div.header-container
+         [:div
+          [:h1.header-title "CotCot Idle"]
+          [:span " by "]
+          [:a.header-link {:href "http://www.julienrouse.com" :target "_blank" :style {:text-decoration "underline" }} "Julien"]
+          [header-message-component "News"]
+
+          [header-button-component "Delete" (fn [] (remove-item! :save))]
+          [header-button-component "Use previous save"  (fn [] (swap! test merge (get-item :save)))]
+          [header-button-component "Save" (fn [] (set-item! :save @test))]
+          [header-message-component (str (@test :currency) "$")]
+          ]
+         [:div {:class "clear" :style {:clear "both"}}]])        
+
+(defn cotcot-component [my-atom lvl-key]
+        (let [cotcot (@my-atom lvl-key)]
+                (when (or (<= (cotcot :initial-cost) 10) (>= (@my-atom :lifetime-earning) (cotcot :initial-cost)))
+                        [:div
+                         {:style {:margin "5px 0px 0px 5px"}}
+                         [:input {:style {:display "block" :margin "0 auto"}
+                                  :type "button"
+                                  :disabled (>= (calc-cost my-atom lvl-key) (@my-atom :currency))
+                                  :value (str "Buy 1 " (cotcot :name) " for " (calc-cost my-atom lvl-key) "$(" (cotcot :quantity) ")") 
+                                  :on-click (buyCotCot my-atom :currency lvl-key)}]
+                         ;[:label (str " " (cotcot :description) ". Base earning is " (value-per-tick-for-one my-atom lvl-key) "$/tick. All cotcot earns " (value-per-tick my-atom lvl-key) "$/tick. (" 
+                         ;(gstring/format "%.2f" (double (* 100 (/ (value-per-tick my-atom lvl-key)
+                         ;(if (> (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4]) 0)
+                         ;(total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4])
+                         ; 1)))))
+                         ;"% of total.)")]
+                         ])))
+
+(defn upgrade-component [my-atom upgrade-key]
+        (let [upgrade ((@my-atom :upgrades) upgrade-key)]
+                (when-not (or (upgrade :bought) (< (@my-atom :lifetime-earning) (upgrade :cost)))
+                        [:div
+                         {:style {:margin "5px 0px 0px 5px"}}
+                         [:input {:style {:display "block" :margin "0 auto"}
+                                  :type "button" 
+                                  :value (upgrade :name)
+                                  :disabled (>= (upgrade :cost) (@my-atom :currency))
+                                  :on-click (fn [e]
+                                                    (swap! my-atom update-in [:upgrades upgrade-key :bought] (fn [e] true))
+                                                    (buy my-atom :currency (upgrade :cost))
+                                                    (add-upgrade-mult my-atom (upgrade :benefit)))}]
+                         ;[:label (str (upgrade :description))]
+                         ])))
+
+;;;; APP
+;;;; APP
+(defn cotcotidle []
+        [:div.app-container
+         [header-component ]
+         [:div.center
+          [:div.container
+           [:p (str (Math/floor (@test :currency)) " Oeuf(s)")]
+           [:p (str "$/tick:" (total-earning-per-tick test [:lvl1 :lvl2 :lvl3 :lvl4]))]
+           [:input {
+                           :type "button" 
+                           :value "Reset"
+                           :disabled false
+                           :on-click (fn [] (reset-game))}]]
+          [:div.container.container-box
+           [cotcot-component test :lvl1]
+           [cotcot-component test :lvl2]
+           [cotcot-component test :lvl3]
+           [cotcot-component test :lvl4]]
+          [:div.container.container-box 
+           [upgrade-component test :upgrade1]
+           [upgrade-component test :upgrade2]]
+          [:div {:style {:clear "both"}}]]
+         ])
+</code></pre>
+
+<script src="https://storage.googleapis.com/app.klipse.tech/plugin/js/klipse_plugin.js"></script>
+</body>

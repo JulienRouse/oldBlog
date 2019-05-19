@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="en"><base href="../../.."><meta name="description" content="Look back on the accomplishment during the codereview quest of January 18"><title>Summary of my codereview quest</title><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"><link rel="stylesheet" href="css/layouts/blog.css"><!--[if lte IE 8]><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css"><![endif]-->
+<!--[if gt IE 8]><!--><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css"><!--<![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="css/layouts/blog-old-ie.css"><![endif]-->
+<!--[if gt IE 8]><!--><link rel="stylesheet" href="css/layouts/blog.css"><!--<![endif]--><link rel="stylesheet" href="css/layouts/articles.css"><meta name="description" content="Look back on the accomplishment during the codereview quest of January 18"><title>Summary of my codereview quest</title></head><!--script(src='/jquery.js')--><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><h1 class="brand-title">Julien's Blog</h1><h2 class="brand-tagline">Learning for fun and profits!</h2><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="index.html">Home</a></li><li class="nav-item"><a class="pure-button" href="template/about.html">About</a></li><li class="nav-item nav-item-traduction"><a class="pure-button" href="template/articles/fr/2018-02-21_compte_rendu_de_la_quete_pour_la_revue_de_code.html"><img src="img/common/002-france.png" alt="Version française"></a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><h2>CodeReview Quest summary</h2>
+<h3>Preamble</h3>
+<p>This post is a follow-up on the post I made at the start of January. It's probably better to go read it before to get the full picture (or to refresh your memory if you need it). You can read the previous post <a href="www.julienrouse.com/template/articles/en/2018-01-06_StackExchange_codereview_quest.html">here</a>.</p>
+<h3>Results</h3>
+<p>I made <strong>5</strong> code reviews from January 6 to February 6:</p>
+<ul>
+<li><a href="https://codereview.stackexchange.com/a/184444/87312">A review in Python of a stack inplementation</a></li>
+<li><a href="https://codereview.stackexchange.com/a/184519/87312">A review in Java of the implementation of Conway's Game of life</a></li>
+<li><a href="https://codereview.stackexchange.com/a/185096/87312">A review in Java of a JavaFX program to calculate XP points for fantasy characters</a></li>
+<li><a href="https://codereview.stackexchange.com/a/185247/87312">A review in Java of an algorithm to remove occurrences of items in an array</a></li>
+<li><a href="https://codereview.stackexchange.com/a/185423/87312">A review in Java of a JSON schema validation helper</a></li>
+</ul>
+<p>Three of them got 0 votes, one got 3 positive votes, and one got 5 positive votes. On StackExchange, an answer is considered a top post(meaning a good post) if it reaches 5. So one of my answers qualifies for good material, one is 'OK' but not great, and three of them are considered bad or useless(most of those answers were seen by least than 50 peoples, but still nobody voted for it).</p>
+<h3>Reflection on those reviews</h3>
+<p>For Python, it's been quite some time I haven't done anything meaningful so I did review the style of the code and   I wrote a little paragraph on <code>self</code> in Python and its use and differences with Java <code>this</code>. I should probably code more in Python before reviewing more code, unless beginner's code. It forced me to look up <strong>PEP</strong> documents about styling code in Python, namely <a href="https://www.python.org/dev/peps/pep-0008/"><strong>PEP8</strong></a> which is the official style guide on Python, and <a href="https://www.python.org/dev/peps/pep-0257/"><strong>PEP257</strong></a> which is the official style guide on documentation. Those <strong>PEP</strong> documents are more about convention than strict laws, nevertheless those conventions are really well respected in Python and should be known.</p>
+<p>Overall this review in Python reminded me some good practices, but mostly that I am out of practice in Python and need to code again seriously with it before trying to help others. (Unless on basic stuff, or non-language dependent concepts).</p>
+<p>As for Java, I have mixed feelings. In those reviews, I spotted bad naming, code that could be refactored, good and bad uses of <code>Exception</code>, bad uses of documentation/comments. But other answers provided insights that I did miss like a better way of solving the problem, when there was too much (useless) comments, and also post that were maybe more opinion based but that were contrary to what I wrote. It means a few things: sometimes, coding is opinion based, which is fine. Also I need to try to take a step back and look at the problem in the big picture, not to miss when problem can be solved more efficiently by changing the overall way of doing it, instead of trying to improve locally a suboptimal way of solving a problem.</p>
+<p>Reading Java code again and trying to understand and improve on it was hard, I'll start to practice soon again to get better at it.</p>
+<h3>Conclusion</h3>
+<p>It was a good experience reading other people code, I should definitely do it again to keep improving my reviewing skill.</p>
+<p>If you read it all, Yeah! You should definitely try as well the code review experience on <a href="https://codereview.stackexchange.com/">codereview</a>.</p>
+</div></div><div class="footer"><div class="pure-menu pure-menu-horizontal"><ul><li class="pure-menu-item"><a class="pure-menu-link" href="https://github.com/JulienRouse" target="_blank" rel="external">Github</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://www.linkedin.com/in/julien-rous%C3%A9-073708102/" target="_blank" rel="external">Linkedin</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://www.hackerrank.com/JulienRouse" target="_blank" rel="external">HackerRank</a></li><li class="pure-menu-item"><a href="https://stackexchange.com/users/1191576/julien-rous%c3%a9" target="_blank" rel="external"><img src="https://stackexchange.com/users/flair/1191576.png" width="208" height="58" alt="profile for Julien Rous&amp;#233; on Stack Exchange, a network of free, community-driven Q&amp;amp;A sites" title="profile for Julien Rous&amp;#233; on Stack Exchange, a network of free, community-driven Q&amp;amp;A sites"></a></li></ul></div></div><!--<a title="Google Analytics Alternative" href="http://clicky.com/101093377"><img alt="Google Analytics Alternative" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>-->
+<script type="text/javascript">
+    var clicky_site_ids = clicky_site_ids || [];
+    clicky_site_ids.push(101093377);
+    (function() {
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = '//static.getclicky.com/js';
+        ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
+    })();
+</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101093377ns.gif" /></p></noscript></body></html>

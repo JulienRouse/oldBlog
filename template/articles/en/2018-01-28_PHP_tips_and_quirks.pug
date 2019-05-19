@@ -1,0 +1,17 @@
+extends ../../layout
+
+
+block prepend head
+    base(href="../../..")
+    block head-more
+        - var title = 'PHP tips and quirks'
+        - var description = 'Let\'s learn some fun tips and quirks of PHP'
+        meta(name='description' content=description)
+        title #{title}
+
+block traduction
+    li.nav-item.nav-item-traduction
+        a.pure-button(href="template/articles/fr/2018-01-28_PHP_tips_and_quirks.html")
+            img(src="img/common/002-france.png" alt="Version française")
+block content
+    include:markdown-it ../../../articles_markdown/en/2018-01-28_PHP_tips_and_trick.md

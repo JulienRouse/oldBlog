@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<script>
+    window.klipse_settings = {
+         selector: '.language-klipse',// css selector for the html elements you want to klipsify
+         selector_reagent: '.language-reagent', // selector for reagent snippets
+		codemirror_options_in: {
+			indentUnit: 8,
+			lineWrapping: true,
+			lineNumbers: true,
+			autoCloseBrackets: true
+		},
+		codemirror_options_out: {
+			lineWrapping: true,
+			lineNumbers: true
+		}
+	}
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"> 
+
+</head>
+<body>
+
+<pre><code class="language-klipse">(map inc [1 2 3])
+</code></pre>
+
+<pre><code class="language-reagent">
+(ns my.reagent-examples
+  (:require [reagent.core :as r]))
+
+(when-let [element (js/document.getElementById "app")]
+  (r/render-component [component] element))
+ 
+(defn greetings []
+   [:p "Hello world"])
+   
+(defn show-chart
+  []
+  (let [chart-data {:labels ["Mar-2012" "Jun-2012" "Nov-2012" "Oct-2013" "Nov-2014"]
+                    :series [[1 1 6 15 25]]}
+        options {:width  "700px"
+                 :height "380px"}]
+    (js/Chartist.Line. ".ct-chart" (clj->js chart-data) (clj->js options)))) 
+  
+(defn chart-component
+  []
+  (let [some "state goes here"]
+    (r/create-class
+      {:component-did-mount (fn [] (show-chart))
+       :display-name        "chart-component"
+       :reagent-render      (fn []
+                              [:div {:class "ct-chart ct-perfect-fourth"}])})))
+</code></pre>
+
+<pre><code class="language-reagent">
+(ns my.reagent-examples
+  (:require [reagent.core :as r]))
+
+(def data (r/atom {:pv 180 :pvmax 300 :mana 80}))
+(def datapv (r/atom 100))
+
+(defn healthbar [pv pvmax]
+  [:div {:value :value :style {:color "red" :width (str (int (* (/ pv pvmax) 100)) "%") :background-color "blue" :border "1px solid black"}} (str (int (* (/ pv pvmax) 100)) "%")])
+
+(defn buy [atom1 key1 qtty]
+    (swap! atom1 merge {key1 (- (@atom1 key1) qtty)}))
+
+(defn sell [atom1 key1 qtty]
+    (swap! atom1 merge {key1 (+ (@atom1 key1) qtty)}))
+
+(defn container-green [component]
+  [:div {:style {:color "green" }}
+   component])
+
+(defn t []
+  (let [{:keys [pv pvmax mana] :as datadata} @data])
+  [:div
+   [:p pvmax]
+   [:p "toto"]
+   [healthbar (@data :pv) (@data :pvmax)]
+   [healthbar (- (@data :pv) 50) (@data :pvmax)]
+   [healthbar 50 1000]
+   [healthbar @datapv 100]
+   [:input {:type "button" :value "lose health" :on-click (fn [e] (swap! datapv dec)) } ]
+   [:input {:type "button" :value "gain health" :on-click (fn [e] (swap! data merge {:pv (+ (@data :pv) 10)})) } ]
+   [:input {:type "button" :value "increase max health" :on-click (fn [e] (swap! data merge {:pvmax (+ (@data :pvmax) 50)}))}]
+   [:input {:type "button" :value "buy 1" :on-click #(buy data :mana 5)}]
+   [:p @datapv]
+   [:p (str (@data :pvmax) "pvmax")]
+   [:p (str (@data :pv) "pv" )]
+   [:p (str (@data :mana) "mana" )]
+   ])
+
+(defn tt []
+  (container-green (t)))
+</code></pre>
+
+<pre><code class="language-reagent">
+(ns my.reagent-examples
+        (:require 
+                [reagent.core :as r]
+                [goog.string :as gstring]
+                [goog.string.format]))
+
+;;;; Operation for localstorage
+;;;;https://gist.github.com/daveliepmann/cf923140702c8b1de301
+(defn set-item!
+        "Set `key' in browser's localStorage to `val`."
+        [key val]
+        (.setItem (.-localStorage js/window) key (pr-str val)))
+
+(defn get-item
+        "Returns value of `key' from browser's localStorage."
+        [key]
+        (let [val (.getItem (.-localStorage js/window) key)]
+                (cljs.reader/read-string (if (string? val)
+                                                 val
+                                                 ""))))
+
+(defn remove-item!
+        "Remove the browser's localStorage value for the given `key`"
+        [key]
+        (.removeItem (.-localStorage js/window) key))
+
+;;;; State
+(defn make-cotcot 
+        [initial-cost cost-multiplier initial-earning name description] 
+        {:initial-cost initial-cost :cost-multiplier cost-multiplier :initial-earning initial-earning :quantity 0 :name name :description description})
+
+(defn make-upgrade
+        [name description cost benefit]
+        {:name name :description description :cost cost :benefit benefit :bought false})
+
+(def test (r/atom {:currency 20
+                   :lifetime-earning 0
+                   :lvl1 (make-cotcot 10 1.07 0.5 "petite poulette" "cute little poulette") 
+                   :lvl2 (make-cotcot 100 1.1 2 "moyenne poulette" "cute medium poulette") 
+                   :lvl3 (make-cotcot 1000 1.13 10 "grande poulette" "cute big poulette")
+                   :lvl4 (make-cotcot 100000 1.14 100 "mega poulette" "waouw")
+                   :upgrade-multiplier 1
+                   :upgrades {:upgrade1 (make-upgrade "upgrade1" "description1 blabla" 10 0.01)
+                              :upgrade2 (make-upgrade "upgrade2" "description2 bloblo" 100 0.1)}
+                   :reset-multiplier 1}))
+
+;;;; FN
+(defn calc-cost [my-atom lvl-key]
+        (let [initial-cost ((@my-atom lvl-key) :initial-cost)
+              quantity ((@my-atom lvl-key) :quantity)
+              cost-multiplier ((@my-atom lvl-key) :cost-multiplier)]
+                (int (+ (* initial-cost (Math/pow cost-multiplier quantity)) quantity))))
+
+(defn add-upgrade-mult [my-atom multiplier]
+        (swap! my-atom update-in [:upgrade-multiplier] + multiplier))
+
+(defn buy [my-atom my-key quantity]
+        (swap! my-atom merge {my-key (- (@my-atom my-key) quantity)}))
+
+(defn sell [my-atom lvl-key quantity]
+        (swap! my-atom update-in [lvl-key :quantity] + quantity))
+
+(defn buyCotCot [my-atom currency-key lvl-key]
+        (let [cost (calc-cost my-atom lvl-key)]
+                (when (<= cost (@my-atom :currency))
+                        (fn [e]
+                                (buy my-atom currency-key cost)
+                                (sell my-atom lvl-key 1)))))
+(defn buyCotCot2 [my-atom currency-key lvl-key]
+        (let [cost (calc-cost my-atom lvl-key)]
+                (when (<= cost (@my-atom :currency))
+                        (buy my-atom currency-key cost)
+                        (sell my-atom lvl-key 1))))
+
+(defn value-per-tick-for-one [my-atom lvl-key]
+        (let [lvl-stat (@my-atom lvl-key)
+              upgrade-multiplier (@my-atom :upgrade-multiplier)
+              reset-multiplier (@my-atom :reset-multiplier)]
+                (* (lvl-stat :initial-earning) upgrade-multiplier reset-multiplier)))
+
+(defn value-per-tick [my-atom lvl-key]
+        (let [lvl-stat (@my-atom lvl-key)
+              upgrade-multiplier (@my-atom :upgrade-multiplier)
+              reset-multiplier (@my-atom :reset-multiplier)]
+                (* (lvl-stat :quantity) (lvl-stat :initial-earning) upgrade-multiplier reset-multiplier)))
+
+(defn total-earning-per-tick [my-atom my-keys]
+        (reduce + (map value-per-tick (repeat my-atom) my-keys)))
+
+
+(defn update-ressource [my-atom]
+        (let [money (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4])]
+                (swap! my-atom merge {:currency (+ (@my-atom :currency) money) :lifetime-earning (+ (@my-atom :lifetime-earning) money)})))
+
+;;;; TIMER
+
+(defonce timer-update-ressource
+        (js/setInterval #(update-ressource test) 1000)) ;; Increment app-state every 1000ms
+
+;;;; COMPONENTS
+(defn header-message-component [message]
+        [:span {:style {:float "right" :margin "0 10px"}} message] )
+
+(defn header-button-component [value fn]
+        [header-message-component 
+         [:input {:class "header-input"
+                  :type "button" 
+                  :value value 
+                  :on-click fn
+                  :style {:background-color "white"
+                          :cursor "pointer"
+                          :border "none"
+                          :padding "0"}}]])
+
+(defn header-component [app-state]
+  [:div {:style {:margin-bottom "5px" :border-bottom "1px solid black"}}
+     [:div
+      [:h1 {:style {:display "inline" :font-weight "normal" :font-size "14px"}}"CotCot Idle"]
+      [:span " by "]
+      [:a {:href "http://www.julienrouse.com" :target "_blank" :style {:text-decoration "underline" }} "Julien"]
+      [header-message-component "News"]
+      [header-message-component (str (app-state :currency) "$")]
+      [header-button-component "News" (fn [] (set-item! :save @test))]]
+     [:div {:class "clear" :style {:clear "both"}}]])        
+
+(defn cotcot-component [my-atom lvl-key]
+        (let [cotcot (@my-atom lvl-key)]
+                (when (or (<= (cotcot :initial-cost) 10) (>= (@my-atom :lifetime-earning) (cotcot :initial-cost)))
+                        [:div
+                         {:style {:margin "5px 0px 0px 5px"}}
+                         [:input {:type "button"
+                                  :disabled (>= (calc-cost my-atom lvl-key) (@my-atom :currency))
+                                  :value (str "Buy 1 " (cotcot :name) " for " (calc-cost my-atom lvl-key) "$(" (cotcot :quantity) ")") 
+                                  :on-click (buyCotCot my-atom :currency lvl-key)}]
+                         [:label (str " " (cotcot :description) ". Base earning is " (value-per-tick-for-one my-atom lvl-key) "$/tick. All cotcot earns " (value-per-tick my-atom lvl-key) "$/tick. (" 
+                                      (gstring/format "%.2f" (double (* 100 (/ (value-per-tick my-atom lvl-key)
+                                                                               (if (> (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4]) 0)
+                                                                                       (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4])
+                                                                                       1)))))
+                                      "% of total.)")]])))
+
+(defn upgrade-component [my-atom upgrade-key]
+        (let [upgrade ((@my-atom :upgrades) upgrade-key)]
+                (when-not (or (upgrade :bought) (< (@my-atom :lifetime-earning) (upgrade :cost)))
+                        [:div
+                         {:style {:margin "5px 0px 0px 5px"}}
+                         [:input {:type "button" 
+                                  :value (upgrade :name)
+                                  :disabled (>= (upgrade :cost) (@my-atom :currency))
+                                  :on-click (fn [e]
+                                                    (swap! my-atom update-in [:upgrades upgrade-key :bought] (fn [e] true))
+                                                    (buy my-atom :currency (upgrade :cost))
+                                                    (add-upgrade-mult my-atom (upgrade :benefit)))}]
+                         [:label (str (upgrade :description))]
+                         ])))
+
+;;;; APP
+(defn cotcotidle []
+        [:div {:style {:margin "5px" :cursor "default"}}
+         [header-component @test]
+         [:div {:style {:width "10%" :float "left" }}
+          [:p (str (Math/floor (@test :currency)) " Oeuf(s)")]
+          [:p (str "$/tick:" (total-earning-per-tick test [:lvl1 :lvl2 :lvl3 :lvl4]))]]
+         [:div {:style {:width "40%"  :outline "1px solid black" :margin-right "5px":float "left" :min-height "300px"}}
+          [cotcot-component test :lvl1]
+          [cotcot-component test :lvl2]
+          [cotcot-component test :lvl3]
+          [cotcot-component test :lvl4]]
+         [:div {:style {:width "40%"  :outline "1px solid black" :float "left" :min-height "300px"}}
+          [upgrade-component test :upgrade1]
+          [upgrade-component test :upgrade2]]
+         [:div {:style {:clear "both"}}]
+         [:input {:type "button" :value "Save on local storage" :on-click (fn [] (set-item! :save @test))}]
+         [:input {:type "button" :value "Use previous save" :on-click (fn [] (swap! test merge (get-item :save)))}]
+         [:input {:type "button" :value "Delete local storage" :on-click (fn [] (remove-item! :save))}]
+         [:p (str "local storage: " (get-item :save))]
+         [:p (str "test: " @test)]
+         ])
+</code></pre>
+
+<script src="https://storage.googleapis.com/app.klipse.tech/plugin/js/klipse_plugin.js"></script>
+</body>

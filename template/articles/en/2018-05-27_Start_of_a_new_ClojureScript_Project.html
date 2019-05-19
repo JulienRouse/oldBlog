@@ -1,0 +1,282 @@
+<!DOCTYPE html><html lang="en"><base href="../../.."><meta name="description" content="I built a prototype for an idle game, working with ClojureScript, re-agent and Klipse"><title>A new ClojureScript project: an idle game</title><link rel="stylesheet" href="cotcot/style.css"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"><link rel="stylesheet" href="css/layouts/blog.css"><!--[if lte IE 8]><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css"><![endif]-->
+<!--[if gt IE 8]><!--><link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css"><!--<![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="css/layouts/blog-old-ie.css"><![endif]-->
+<!--[if gt IE 8]><!--><link rel="stylesheet" href="css/layouts/blog.css"><!--<![endif]--><link rel="stylesheet" href="css/layouts/articles.css"><meta name="description" content="I built a prototype for an idle game, working with ClojureScript, re-agent and Klipse"><title>A new ClojureScript project: an idle game</title></head><!--script(src='/jquery.js')--><body><div class="pure-g" id="layout"><div class="sidebar pure-u-1 pure-u-md-1-4"><div class="header"><h1 class="brand-title">Julien's Blog</h1><h2 class="brand-tagline">Learning for fun and profits!</h2><nav class="nav"><ul class="nav-list"><li class="nav-item"><a class="pure-button" href="index.html">Home</a></li><li class="nav-item"><a class="pure-button" href="template/about.html">About</a></li><li class="nav-item nav-item-traduction"><a class="pure-button" href="template/about.html"><img src="img/common/002-france.png" alt="Version française"></a></li></ul></nav></div></div><div class="content pure-u-1 pure-u-md-3-4"><h2>Start of a new ClojureScript project</h2>
+<p>The last few weeks I have been busy starting a new project in ClojureScript. I've played my fair share of minigames on websites like <a href="https://www.kongregate.com/">Kongregate</a>, <a href="https://armorgames.com/">Armor Games</a> or more recently HTML5 games on <a href="https://itch.io/">itch.io</a>.</p>
+<p>I set my mind to build a little <a href="https://en.wikipedia.org/wiki/Incremental_game">Idle game</a> (or incremental game). It's a project I had already done a little 1 week prototype last summer with AngularJS, and I wanted to start again with Clojure/ClojureScript and <a href="https://github.com/reagent-project/reagent">reagent</a>  (<a href="https://github.com/reagent-project/reagent/tree/master/docs">reagent useful doc</a>), a binding library for React.</p>
+<ul>
+<li><a href="https://github.com/viebel/klipse">Klispe</a></li>
+</ul>
+<p>To write my little prototype, and to not have the burden of installing a new dev environment for this little project, I found <a href="https://github.com/viebel/klipse">klispe</a> which is a client-side code evaluator pluggable on any web page. It supports a lot of language like Python, Ruby, C++, Scheme, Clojure/ClojureScript (the one I used in my project) and many more languages.</p>
+<p>To make it work, you have to paste a little snippet of Javascript inside your web page and  then you have the REPL experience inside your HTML page. How cool is that? :)</p>
+<ul>
+<li>The project</li>
+</ul>
+<p>For now I have a very early prototype, lacking a lot of content but that show a bit how the game might turn out. It would need a rewrite to have a cleaner code base, some tests, documentation and adding a lots of content.</p>
+<p>The steps to build it were:</p>
+<ol>
+<li>Start very small with just one &quot;building&quot; producing a fixed amount per click.</li>
+<li>Add a timer to get an income coming in every second.</li>
+<li>Add another &quot;building&quot;, and update the function in charge of calculating income.</li>
+<li>Add upgrades (which are income multiplier you buy)</li>
+<li>Add saving/resetting the game with browser cookies.</li>
+<li>Upgrade the UI (it's not very good right now but still 1000X better than what it was for most of the project).</li>
+<li>Add a bit of content to see if everything works.</li>
+</ol>
+<p>Working with a REPL and seeing the result on the same page was a great way of prototyping this project. (Although Klispe began to show its limit once the project got into the three-digits lines of code.)</p>
+<h3>What's next</h3>
+<p>I'm gonna rewrite/fix some of the issues on this project but this time I set up a nice dev environment</p>
+<ul>
+<li><a href="https://github.com/clojure-emacs/cider">Emacs/Cider</a></li>
+<li><a href="https://github.com/reagent-project/reagent">reagent</a>  (<a href="https://github.com/reagent-project/reagent/tree/master/docs">reagent useful doc</a>)</li>
+<li><a href="https://github.com/bhauman/lein-figwheel">lein-figwheel</a></li>
+<li><a href="https://clojurescript.org/tools/testing">cljs.test</a></li>
+</ul>
+<p>Some other interesting libraries I might want to use for this project (or a new one) are:</p>
+<ul>
+<li><a href="https://github.com/Day8/re-frame">reframe</a> re-frame is a pattern for writing SPAs in ClojureScript, using Reagent.</li>
+<li><a href="https://github.com/clojure/test.check">test.check</a> (and a wrapper for it <a href="https://github.com/gfredericks/test.chuck">test.chuck</a>) which is inspired by the very good Haskell library QuickCheck. (to do some properties testing)</li>
+</ul>
+<h3>The prototype</h3>
+<p>Below you can play with the early prototype. ( If you see an error message at the bottom of the page, try to disable your adblocker and reload the page, that should do the trick. I had the problem with uBlock but maybe others behave the same. Sorry for the inconvenience).</p>
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css">
+<script>
+    window.klipse_settings = {
+         selector: '.language-klipse',// css selector for the html elements you want to klipsify
+         selector_reagent: '.language-reagent', // selector for reagent snippets
+		codemirror_options_in: {
+			indentUnit: 8,
+			lineWrapping: true,
+			lineNumbers: true,
+			autoCloseBrackets: true
+		},
+		codemirror_options_out: {
+			lineWrapping: true,
+			lineNumbers: true
+		}
+	}
+</script>
+
+</head>
+<body>
+
+<pre><code class="language-reagent">
+(ns my.cotcot
+        (:require 
+                [reagent.core :as r]
+                [goog.string :as gstring]
+                [goog.string.format]))
+
+;;;; RENDER
+(when-let [element (js/document.getElementById "app")]
+        (r/render-component [component] element))				
+
+;;;; Operation for localstorage
+;;;;https://gist.github.com/daveliepmann/cf923140702c8b1de301
+(defn set-item!
+        "Set `key' in browser's localStorage to `val`."
+        [key val]
+        (.setItem (.-localStorage js/window) key (pr-str val)))
+
+(defn get-item
+        "Returns value of `key' from browser's localStorage."
+        [key]
+        (let [val (.getItem (.-localStorage js/window) key)]
+                (cljs.reader/read-string (if (string? val)
+                                                 val
+                                                 ""))))
+
+(defn remove-item!
+        "Remove the browser's localStorage value for the given `key`"
+        [key]
+        (.removeItem (.-localStorage js/window) key))
+
+;;;; State
+(defn make-cotcot 
+        "Create the main cotcot component"
+        [initial-cost cost-multiplier initial-earning name description] 
+        {:initial-cost initial-cost :cost-multiplier cost-multiplier :initial-earning initial-earning :quantity 0 :name name :description description})
+
+(defn make-upgrade
+        [name description cost benefit]
+        {:name name :description description :cost cost :benefit benefit :bought false})
+
+(def new-state {:currency 20
+                   :lifetime-earning 0
+                   :lvl1 (make-cotcot 10 1.07 0.5 "little poulette" "cute little poulette") 
+                   :lvl2 (make-cotcot 100 1.1 2 "medium poulette" "cute medium poulette") 
+                   :lvl3 (make-cotcot 1000 1.13 10 "big poulette" "cute big poulette")
+                   :lvl4 (make-cotcot 100000 1.14 100 "XXL poulette" "waouw")
+                   :upgrade-multiplier 1
+                   :upgrades {:upgrade1 (make-upgrade "upgrade1" "description1 blabla" 10 0.01)
+                              :upgrade2 (make-upgrade "upgrade2" "description2 bloblo" 100 0.1)}
+                   :reset-multiplier 1})
+
+(def test (r/atom new-state))
+
+(def all-time-stats (r/atom {}))
+
+;;;; FN
+(defn calc-cost [my-atom lvl-key]
+        (let [initial-cost ((@my-atom lvl-key) :initial-cost)
+              quantity ((@my-atom lvl-key) :quantity)
+              cost-multiplier ((@my-atom lvl-key) :cost-multiplier)]
+                (int (+ (* initial-cost (Math/pow cost-multiplier quantity)) quantity))))
+
+(defn add-upgrade-mult [my-atom multiplier]
+        (swap! my-atom update-in [:upgrade-multiplier] + multiplier))
+
+(defn buy [my-atom my-key quantity]
+        (swap! my-atom merge {my-key (- (@my-atom my-key) quantity)}))
+
+(defn sell [my-atom lvl-key quantity]
+        (swap! my-atom update-in [lvl-key :quantity] + quantity))
+
+(defn buyCotCot [my-atom currency-key lvl-key]
+        (let [cost (calc-cost my-atom lvl-key)]
+                (when (<= cost (@my-atom :currency))
+                        (fn [e]
+                                (buy my-atom currency-key cost)
+                                (sell my-atom lvl-key 1)))))
+(defn buyCotCot2 [my-atom currency-key lvl-key]
+        (let [cost (calc-cost my-atom lvl-key)]
+                (when (<= cost (@my-atom :currency))
+                        (buy my-atom currency-key cost)
+                        (sell my-atom lvl-key 1))))
+
+(defn value-per-tick-for-one [my-atom lvl-key]
+        (let [lvl-stat (@my-atom lvl-key)
+              upgrade-multiplier (@my-atom :upgrade-multiplier)
+              reset-multiplier (@my-atom :reset-multiplier)]
+                (* (lvl-stat :initial-earning) upgrade-multiplier reset-multiplier)))
+
+(defn value-per-tick [my-atom lvl-key]
+        (let [lvl-stat (@my-atom lvl-key)
+              upgrade-multiplier (@my-atom :upgrade-multiplier)
+              reset-multiplier (@my-atom :reset-multiplier)]
+                (* (lvl-stat :quantity) (lvl-stat :initial-earning) upgrade-multiplier reset-multiplier)))
+
+(defn total-earning-per-tick [my-atom my-keys]
+        (reduce + (map value-per-tick (repeat my-atom) my-keys)))
+
+
+(defn update-ressource [my-atom]
+        (let [money (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4])]
+                (swap! my-atom merge {:currency (+ (@my-atom :currency) money) :lifetime-earning (+ (@my-atom :lifetime-earning) money)})))
+
+(defn reset-game []
+        "Hard reset on the game state"
+        (reset! test new-state))
+
+(defn prestige []
+        "Soft reset, with a bonus"
+        nil)
+
+;;;; TIMER
+(defonce timer-update-ressource
+        (js/setInterval #(update-ressource test) 1000)) ;; Increment app-state every 1000ms
+
+;;;; COMPONENTS
+(defn header-message-component [message]
+        [:span.header-span message] )
+
+(defn header-button-component [value fn]
+        [header-message-component 
+         [:input.header-input 
+          {:type "button" 
+           :value value 
+           :on-click fn}]])
+
+(defn header-component []
+        [:div.header-container
+         [:div
+          [:h1.header-title "CotCot Idle"]
+          [:span " by "]
+          [:a.header-link {:href "http://www.julienrouse.com" :target "_blank" :style {:text-decoration "underline" }} "Julien"]
+          [header-message-component "News"]
+
+          [header-button-component "Delete" (fn [] (remove-item! :save))]
+          [header-button-component "Use previous save"  (fn [] (swap! test merge (get-item :save)))]
+          [header-button-component "Save" (fn [] (set-item! :save @test))]
+          [header-message-component (str (@test :currency) "$")]
+          ]
+         [:div {:class "clear" :style {:clear "both"}}]])        
+
+(defn cotcot-component [my-atom lvl-key]
+        (let [cotcot (@my-atom lvl-key)]
+                (when (or (<= (cotcot :initial-cost) 10) (>= (@my-atom :lifetime-earning) (cotcot :initial-cost)))
+                        [:div
+                         {:style {:margin "5px 0px 0px 5px"}}
+                         [:input {:style {:display "block" :margin "0 auto"}
+                                  :type "button"
+                                  :disabled (>= (calc-cost my-atom lvl-key) (@my-atom :currency))
+                                  :value (str "Buy 1 " (cotcot :name) " for " (calc-cost my-atom lvl-key) "$(" (cotcot :quantity) ")") 
+                                  :on-click (buyCotCot my-atom :currency lvl-key)}]
+                         ;[:label (str " " (cotcot :description) ". Base earning is " (value-per-tick-for-one my-atom lvl-key) "$/tick. All cotcot earns " (value-per-tick my-atom lvl-key) "$/tick. (" 
+                         ;(gstring/format "%.2f" (double (* 100 (/ (value-per-tick my-atom lvl-key)
+                         ;(if (> (total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4]) 0)
+                         ;(total-earning-per-tick my-atom [:lvl1 :lvl2 :lvl3 :lvl4])
+                         ; 1)))))
+                         ;"% of total.)")]
+                         ])))
+
+(defn upgrade-component [my-atom upgrade-key]
+        (let [upgrade ((@my-atom :upgrades) upgrade-key)]
+                (when-not (or (upgrade :bought) (< (@my-atom :lifetime-earning) (upgrade :cost)))
+                        [:div
+                         {:style {:margin "5px 0px 0px 5px"}}
+                         [:input {:style {:display "block" :margin "0 auto"}
+                                  :type "button" 
+                                  :value (upgrade :name)
+                                  :disabled (>= (upgrade :cost) (@my-atom :currency))
+                                  :on-click (fn [e]
+                                                    (swap! my-atom update-in [:upgrades upgrade-key :bought] (fn [e] true))
+                                                    (buy my-atom :currency (upgrade :cost))
+                                                    (add-upgrade-mult my-atom (upgrade :benefit)))}]
+                         ;[:label (str (upgrade :description))]
+                         ])))
+
+;;;; APP
+;;;; APP
+(defn cotcotidle []
+        [:div.app-container
+         [header-component ]
+         [:div.center
+          [:div.container
+           [:p (str (Math/floor (@test :currency)) " Oeuf(s)")]
+           [:p (str "$/tick:" (total-earning-per-tick test [:lvl1 :lvl2 :lvl3 :lvl4]))]
+           [:input {
+                           :type "button" 
+                           :value "Reset"
+                           :disabled false
+                           :on-click (fn [] (reset-game))}]]
+          [:div.container.container-box
+           [cotcot-component test :lvl1]
+           [cotcot-component test :lvl2]
+           [cotcot-component test :lvl3]
+           [cotcot-component test :lvl4]]
+          [:div.container.container-box 
+           [upgrade-component test :upgrade1]
+           [upgrade-component test :upgrade2]]
+          [:div {:style {:clear "both"}}]]
+         ])
+</code></pre>
+
+<script src="https://storage.googleapis.com/app.klipse.tech/plugin/js/klipse_plugin.js"></script>
+</body></div></div><div class="footer"><div class="pure-menu pure-menu-horizontal"><ul><li class="pure-menu-item"><a class="pure-menu-link" href="https://github.com/JulienRouse" target="_blank" rel="external">Github</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://www.linkedin.com/in/julien-rous%C3%A9-073708102/" target="_blank" rel="external">Linkedin</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://www.hackerrank.com/JulienRouse" target="_blank" rel="external">HackerRank</a></li><li class="pure-menu-item"><a href="https://stackexchange.com/users/1191576/julien-rous%c3%a9" target="_blank" rel="external"><img src="https://stackexchange.com/users/flair/1191576.png" width="208" height="58" alt="profile for Julien Rous&amp;#233; on Stack Exchange, a network of free, community-driven Q&amp;amp;A sites" title="profile for Julien Rous&amp;#233; on Stack Exchange, a network of free, community-driven Q&amp;amp;A sites"></a></li></ul></div></div><!--<a title="Google Analytics Alternative" href="http://clicky.com/101093377"><img alt="Google Analytics Alternative" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>-->
+<script type="text/javascript">
+    var clicky_site_ids = clicky_site_ids || [];
+    clicky_site_ids.push(101093377);
+    (function() {
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = '//static.getclicky.com/js';
+        ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
+    })();
+</script>
+<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101093377ns.gif" /></p></noscript></body></html>
